@@ -1,73 +1,83 @@
+let humanScore = 0;
+let computerScore = 0;
+
+const resultsDiv = document.getElementById("results");
+const scoreDiv = document.getElementById("score");
+const winnerDiv = document.getElementById("winner");
+const playAgainBtn = document.getElementById("play-again");
+
 function getComputerChoice() {
     const randomNumber = Math.random();
-    if (randomNumber < 0.33) {
-        return "rock";
-    } else if (randomNumber <0.66) {
-        return "paper";
-    } else {
-        return "scissors";
-    }
+    if (randomNumber < 0.33) return "rock";
+    else if (randomNumber < 0.66) return "paper";
+    else return "scissors";
 }
 
-function getHumanChoice() {
-    const choice = prompt("Enter rock, paper or scissors:");
-    return choice.toLowerCase();
-}
-
-function playGame() {
-    let humanScore = 0;
-    let computerScore = 0;
-
-function playRound(humanChoice, computerChoice) {
-  humanChoice = humanChoice.toLowerCase();
+function playRound(humanChoice) {
+  const computerChoice = getComputerChoice();
+  let resultMessage = "";
 
     if (humanChoice === computerChoice) {
-        alert(`It's a tie! You both chose ${humanChoice}.`);
-        return;
+       resultMessage = `It's a tie! You both chose ${humanChoice}.`;
     }
-
-    let resultMessage = "";
-
-    if (humanChoice === "rock" && computerChoice === "scissors") {
+    else if (humanChoice === "rock" && computerChoice === "scissors") {
         resultMessage = "Rock smashes Scissors! You win!";
         humanScore++;
-    } else if (humanChoice === "scissors" && computerChoice === "rock") {
+    } 
+    else if (humanChoice === "scissors" && computerChoice === "rock") {
         resultMessage = "Rock smashes Scissors! Computer wins!";
         computerScore++;
-    } else if (humanChoice === "paper" && computerChoice === "rock") {
+    } 
+    else if (humanChoice === "paper" && computerChoice === "rock") {
         resultMessage = "Paper covers Rock! You win!";
         humanScore++;
-    } else if (humanChoice === "rock" && computerChoice === "paper") {
+    } 
+    else if (humanChoice === "rock" && computerChoice === "paper") {
         resultMessage = "Paper covers Rock! Computer wins!";
         computerScore++;
-    } else if (humanChoice === "scissors" && computerChoice === "paper") {
+    } 
+    else if (humanChoice === "scissors" && computerChoice === "paper") {
         resultMessage = "Scissors cuts Paper! You win!";
         humanScore++;
-    } else if (humanChoice === "paper" && computerChoice === "scissors") {
+    } 
+    else if (humanChoice === "paper" && computerChoice === "scissors") {
         resultMessage = "Scissors cuts Paper! Computer wins!";
         computerScore++;
     }
 
-    alert(resultMessage);
-    alert(`Score - You; ${humanScore}, Computer; ${computerScore}`);
-}
+    resultsDiv.textContent = resultMessage;
+    scoreDiv.textContent = `Score - You: ${humanScore} | Computer: ${computerScore}`;
 
-for (let i = 0; i <5; i++) {
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
-    playRound(humanSelection, computerSelection);
-}
-
-    let finalMessage = "-- GAME OVER --\n\n";
-    if (humanScore > computerScore) {
-        finalMessage += "Congratulations! You won the game!";
-    } else if (computerScore > humanScore) {
-        finalMessage += "Sorry, the computer won the game!";
-    } else {
-        finalMessage += "It's a tie game!";
+    if (humanScore === 5 || computerScore === 5) {
+        declareWinner();
     }
-    
-    alert(finalMessage);
 }
 
-playGame();
+function declareWinner() {
+    if (humanScore === 5) {
+        winnerDiv.textContent = "Congratulations! You won the game!";
+        winnerDiv.style.color = "green";
+    }
+    else {
+        winnerDiv.textContent = "Sorry! The computer won the game!";
+        winnerDiv.style.color = "red";
+    }
+
+    document.querySelectorAll(".buttons button").forEach(btn =>btn.disabled = true);
+    playAgainBtn.style.display = "inline-block";
+}
+
+function resetGame() {
+    humanScore = 0;
+    computerScore = 0;
+    resultsDiv.textContent = "";
+    scoreDiv.textContent = "";
+    winnerDiv.textContent = "";
+    document.querySelectorAll(".buttons button").forEach(btn => btn.disabled = false);
+    playAgainBtn.style.display = "none";
+}
+
+document.getElementById("rock").addEventListener("click", () => playRound("rock"));
+document.getElementById("paper").addEventListener("click", () => playRound("paper"));
+document.getElementById("scissors").addEventListener("click", () => playRound("scissors"));
+playAgainBtn.addEventListener("click", resetGame);
